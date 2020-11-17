@@ -1,0 +1,36 @@
+version: '3.0'
+
+services:
+    mariadb:
+        image: mariadb:10.5.2
+        hostname: mariadb
+        volumes:
+            - ./mariadb:/var/lib/mysql
+        environment:
+            TZ: "Asia/Ho_Chi_Minh"
+            MYSQL_ALLOW_EMPTY_PASSWORD: "no"
+            MYSQL_ROOT_PASSWORD: "rootpwd"
+            MYSQL_USER: 'radius'
+            MYSQL_PASSWORD: 'R@diusPass'
+            MYSQL_DATABASE: 'radius'
+            MYSQL_ROOT_HOST: 'radius'
+    radius:
+        build:
+            context: .
+            dockerfile: ./Dockerfile
+        environment:
+           MYSQL_HOST: "mariadb"
+           MYSQL_PORT: "3306"
+           MYSQL_DATABASE: "radius"
+           MYSQL_USER: "radius"
+           MYSQL_PASSWORD: "R@diusPass"
+           MYSQL_ROOT_PASSWORD: "rootpwd"
+        hostname: radius
+        ports:
+            - '8081:80'
+            - '11813:1813/udp'
+            - '11812:1812/udp'
+        depends_on:
+            - 'mariadb'
+        volumes:
+            - ./freeradius/clients.conf:/etc/freeradius/3.0/clients.conf
