@@ -1,19 +1,18 @@
 version: '3.0'
-
 services:
     mariadb:
-        image: mariadb:10.5.2
-        hostname: mariadb
+        image: mariadb:10.4
         volumes:
-            - ./mariadb:/var/lib/mysql
+            - ./db:/var/lib/mysql
         environment:
             TZ: "Asia/Ho_Chi_Minh"
             MYSQL_ALLOW_EMPTY_PASSWORD: "no"
             MYSQL_ROOT_PASSWORD: "rootpwd"
             MYSQL_USER: 'radius'
-            MYSQL_PASSWORD: 'R@diusPass'
-            MYSQL_DATABASE: 'radius'
-            MYSQL_ROOT_HOST: 'radius'
+            MYSQL_PASSWORD: 'RadiusPass'
+            MYSQL_DATABASE: 'radiusdb'
+        ports:
+            - '33061:3306'
     radius:
         build:
             context: .
@@ -21,11 +20,10 @@ services:
         environment:
            MYSQL_HOST: "mariadb"
            MYSQL_PORT: "3306"
-           MYSQL_DATABASE: "radius"
+           MYSQL_DATABASE: "radiusdb"
            MYSQL_USER: "radius"
-           MYSQL_PASSWORD: "R@diusPass"
+           MYSQL_PASSWORD: "RadiusPass"
            MYSQL_ROOT_PASSWORD: "rootpwd"
-        hostname: radius
         ports:
             - '8081:80'
             - '11813:1813/udp'
