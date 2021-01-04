@@ -20,7 +20,7 @@ services:
         build:
             context: .
             dockerfile: ./Dockerfile
-        container_name: radius-htv
+        container_name: radius-htv #<--TODO EDIT
         environment:
            MYSQL_HOST: "mariadb-htv" #<--TODO EDIT
            MYSQL_PORT: "3306"
