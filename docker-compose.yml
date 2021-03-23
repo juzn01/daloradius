@@ -1,11 +1,10 @@
 version: '3.0'
 services:
-    mariadb-htv: #<--TODO EDIT
+    mariadb-site1: #<--TODO EDIT
         image: mariadb:10.4
-        container_name: mariadb-htv #<--TODO EDIT
+        container_name: mariadb-site1 #<--TODO EDIT
         volumes:
             - ./db:/var/lib/mysql
-            - ./my.cnf:/etc/mysql/my.cnf
         environment:
             TZ: "Asia/Ho_Chi_Minh"
             MYSQL_ALLOW_EMPTY_PASSWORD: "no"
@@ -15,25 +14,26 @@ services:
             MYSQL_DATABASE: 'radiusdb'
         ports:
             - '33063:3306'
-        restart: always
-    radius-htv:  #<--TODO EDIT
+        restart: unless-stopped
+    radius-site1:  #<--TODO EDIT
         build:
             context: .
             dockerfile: ./Dockerfile
-        container_name: radius-htv #<--TODO EDIT
+        container_name: radius-site1 #<--TODO EDIT
         environment:
-           MYSQL_HOST: "mariadb-htv" #<--TODO EDIT
+           TZ: "Asia/Ho_Chi_Minh"
+           MYSQL_HOST: "mariadb-site1" #<--TODO EDIT
            MYSQL_PORT: "3306"
            MYSQL_DATABASE: "radiusdb"
            MYSQL_USER: "radius"
            MYSQL_PASSWORD: "RadiusPass"
            MYSQL_ROOT_PASSWORD: "rootpwd"
         ports:
-            - '8083:80' #<--TODO EDIT
+            - '8080:80' #<--TODO EDIT
             - '18133:1813/udp' #<--TODO EDIT
             - '18123:1812/udp' #<--TODO EDIT
         depends_on:
-            - 'mariadb-htv'  #<--TODO EDIT
+            - 'mariadb-site1'  #<--TODO EDIT
         volumes:
             - ./freeradius/clients.conf:/etc/freeradius/3.0/clients.conf
-        restart: always
+        restart: unless-stopped
